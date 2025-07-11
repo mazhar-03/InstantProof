@@ -1,0 +1,4 @@
+fastapi~=0.115.13
+pytesseract~=0.3.13
+pillow~=10.4.0
+exifread~=3.3.1
