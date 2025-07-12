@@ -34,3 +34,4 @@ C:\Users\mazha\OneDrive\Pulpit\instant-proof\backend\BackendLogic\obj\Debug\net8
 C:\Users\mazha\OneDrive\Pulpit\instant-proof\backend\BackendLogic\obj\Debug\net8.0\BackendLogic.pdb
 C:\Users\mazha\OneDrive\Pulpit\instant-proof\backend\BackendLogic\obj\Debug\net8.0\BackendLogic.genruntimeconfig.cache
 C:\Users\mazha\OneDrive\Pulpit\instant-proof\backend\BackendLogic\obj\Debug\net8.0\ref\BackendLogic.dll
+C:\Users\mazha\OneDrive\Pulpit\instant-proof\backend\BackendLogic\obj\Debug\net8.0\BackendLogic.sourcelink.json

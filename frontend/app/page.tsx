@@ -79,10 +79,21 @@ export default function Home() {
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-2">Result:</h2>
             <pre className="bg-black p-4 rounded-md text-sm overflow-x-auto whitespace-pre-wrap">
-              {JSON.stringify(result, null, 2)}
-            </pre>
+      {JSON.stringify(result, null, 2)}
+    </pre>
+
+            {result?.pdf_path && (
+              <a
+                href={`http://localhost:8001/download/${encodeURIComponent(result.pdf_path.split("/").pop() || "")}`}
+                download
+                className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+              >
+                📄 Download PDF Report
+              </a>
+            )}
           </div>
         )}
+
       </div>
     </main>
   );
