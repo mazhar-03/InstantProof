@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 
 type OCRResult = {
   extracted_text: string;
   metadata: Record<string, any>;
   filename: string;
+  abuse_flags?: any;
+  pdf_path?: string;
   error?: string; // added optional error for catch block
 };
 
@@ -36,7 +38,7 @@ export default function Home() {
     console.log("Sending file:", file);
 
     try {
-      const res = await fetch("http://localhost:5085/api/ocr/analyze", {
+      const res = await fetch("http://localhost:5070/api/ocr/analyze", {
         method: "POST",
         body: formData,
       });
@@ -50,12 +52,11 @@ export default function Home() {
       console.error("Upload error (full):", error);
 
       if (error instanceof Error) {
-        setResult({ extracted_text: "", metadata: {}, filename: "", error: error.message });
+        setResult({extracted_text: "", metadata: {}, filename: "", error: error.message});
       } else {
-        setResult({ extracted_text: "", metadata: {}, filename: "", error: "Unknown upload error" });
+        setResult({extracted_text: "", metadata: {}, filename: "", error: "Unknown upload error"});
       }
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -65,7 +66,7 @@ export default function Home() {
       <div className="bg-red-400 p-8 rounded-2xl shadow-lg w-full max-w-2xl">
         <h1 className="text-3xl font-bold mb-6 text-center">Instant OCR Proof</h1>
 
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" onChange={handleFileChange}/>
 
         <button
           onClick={handleSubmit}
@@ -84,13 +85,15 @@ export default function Home() {
 
             {result?.pdf_path && (
               <a
-                href={`http://localhost:8001/download/${encodeURIComponent(result.pdf_path.split("/").pop() || "")}`}
+                href={`http://localhost:8001/download/${encodeURIComponent(result.pdf_path)}`}
                 download
                 className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
               >
                 📄 Download PDF Report
               </a>
+
             )}
+
           </div>
         )}
 
