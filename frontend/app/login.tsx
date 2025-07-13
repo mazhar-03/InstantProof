@@ -19,7 +19,7 @@ export default function Login({onToken}: { onToken: (token: string) => void }) {
       if (!res.ok) throw new Error("Invalid credentials");
 
       const data = await res.json();
-      localStorage.setItem("token", data.token); // Save token
+      localStorage.setItem("token", data.token); // save token
       onToken(data.token);
     } catch (err: any) {
       setError(err.message || "Login failed");

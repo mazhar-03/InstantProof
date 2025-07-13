@@ -16,7 +16,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<OCRResult | null>(null);
 
-  // Load token from localStorage initially
+  // load token from localStorage initially
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function Home() {
     if (savedToken) setToken(savedToken);
   }, []);
 
-  // Login state
+  // login state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -33,7 +33,7 @@ export default function Home() {
   const handleLogin = async () => {
     setLoginError("");
     if (!username || !password) {
-      setLoginError("Please enter username and password");
+      setLoginError("Enter username and password.");
       return;
     }
 
@@ -113,7 +113,7 @@ export default function Home() {
   };
 
   if (!token) {
-    // Show login form if not logged in
+    // showing login form if user not logged in
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-300 p-4">
         <div className="bg-red-400 p-8 rounded-2xl shadow-lg w-full max-w-md">
