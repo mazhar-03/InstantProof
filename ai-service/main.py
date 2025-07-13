@@ -8,23 +8,20 @@ from exif_utils import extract_exif_metadata
 from detect_abuse import detect_abuse
 from pdf_generator import generate_pdf_report
 
-# --- App Setup ---
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # adjust for production
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- JWT Config ---
 SECRET_KEY = "4p6w6RlYydqwjOT1n07lLiiDxRnle4Gv"
 ALGORITHM = "HS256"
 ISSUER = "http://localhost:5000"
 AUDIENCE = "http://localhost:5000"
 
-# --- Token Verification ---
 def verify_token(token: str):
     try:
         payload = jwt.decode(
@@ -34,10 +31,10 @@ def verify_token(token: str):
             issuer=ISSUER,
             audience=AUDIENCE
         )
-        print("✅ Token verified:", payload)
+        print("Token verified:", payload)
         return payload
     except JWTError as e:
-        print("❌ JWT ERROR:", repr(e))
+        print("JWT ERROR:", repr(e))
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid or expired token: {str(e)}"
@@ -54,11 +51,10 @@ def get_current_user(authorization: str = Header(...)):
     return payload
 
 
-# --- Analyze Endpoint ---
 @app.post("/analyze")
 async def analyze_file(
     file: UploadFile = File(...),
-    current_user: dict = Depends(get_current_user),  # token verified here
+    current_user: dict = Depends(get_current_user),
 ):
     file_bytes = await file.read()
     upload_dir = "uploads"
@@ -88,7 +84,7 @@ async def analyze_file(
         "pdf_path": os.path.basename(pdf_full_path)
     }
 
-# --- Secure Download Endpoint ---
+
 PDF_DIR = os.path.abspath("generated-pdfs")
 
 @app.get("/download/{filename}")

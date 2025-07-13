@@ -12,7 +12,7 @@ def detect_abuse(text: str):
 
     profane = profanity.contains_profanity(text)
 
-    threat_keywords = ["kill", "bomb", "attack", "threat", "shoot", "die", "destroy", "atakan"]
+    threat_keywords = ["atakan"]
     detected = [word for word in threat_keywords if word in text.lower()]
 
     return {
