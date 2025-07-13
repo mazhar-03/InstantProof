@@ -1,35 +1,73 @@
 import os
+from jose import jwt, JWTError
+from fastapi import FastAPI, File, UploadFile, Depends, Header, HTTPException, status
 from fastapi.responses import FileResponse
-from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from ocr_utils import extract_text
 from exif_utils import extract_exif_metadata
 from detect_abuse import detect_abuse
 from pdf_generator import generate_pdf_report
 
+# --- App Setup ---
 app = FastAPI()
 
-# Allow local dev CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # adjust for production
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.post("/analyze")
-async def analyze_file(file: UploadFile = File(...)):
-    file_bytes = await file.read()
+# --- JWT Config ---
+SECRET_KEY = "4p6w6RlYydqwjOT1n07lLiiDxRnle4Gv"
+ALGORITHM = "HS256"
+ISSUER = "http://localhost:5000"
+AUDIENCE = "http://localhost:5000"
 
+# --- Token Verification ---
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM],
+            issuer=ISSUER,
+            audience=AUDIENCE
+        )
+        print("✅ Token verified:", payload)
+        return payload
+    except JWTError as e:
+        print("❌ JWT ERROR:", repr(e))
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid or expired token: {str(e)}"
+        )
+
+
+def get_current_user(authorization: str = Header(...)):
+    print("Authorization header received:", authorization)
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid auth header")
+    token = authorization[len("Bearer "):]
+    print("Extracted token:", token)
+    payload = verify_token(token)
+    return payload
+
+
+# --- Analyze Endpoint ---
+@app.post("/analyze")
+async def analyze_file(
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user),  # token verified here
+):
+    file_bytes = await file.read()
     upload_dir = "uploads"
     os.makedirs(upload_dir, exist_ok=True)
     file_path = os.path.join(upload_dir, file.filename)
 
-    # Use already-read bytes to save the file
     with open(file_path, "wb") as f:
         f.write(file_bytes)
 
-    # Then use the same bytes everywhere else
     extracted_text = extract_text(file_bytes)
     abuse = detect_abuse(extracted_text)
     metadata = extract_exif_metadata(file_bytes)
@@ -42,24 +80,19 @@ async def analyze_file(file: UploadFile = File(...)):
         filename=file.filename
     )
 
-    pdf_filename = os.path.basename(pdf_full_path)
-
-    if not metadata:
-        metadata = {"info": "No EXIF metadata found in image."}
-
     return {
         "filename": file.filename,
         "extracted_text": extracted_text,
-        "metadata": metadata,
+        "metadata": metadata or {"info": "No EXIF metadata found in image."},
         "abuse_flags": abuse,
-        "pdf_path": os.path.basename(pdf_filename)  # <-- just filename, not path
+        "pdf_path": os.path.basename(pdf_full_path)
     }
 
-
+# --- Secure Download Endpoint ---
 PDF_DIR = os.path.abspath("generated-pdfs")
 
 @app.get("/download/{filename}")
-async def download_pdf(filename: str):
+async def download_pdf(filename: str, current_user: dict = Depends(get_current_user)):
     file_path = os.path.join(PDF_DIR, filename)
 
     if not os.path.isfile(file_path):

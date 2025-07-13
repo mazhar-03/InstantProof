@@ -1,0 +1,5 @@
+from jose import jwt
+
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjNjAwNmUzNC0wOWY5LTRhYzQtOGEyMi1mODlkZWRmZDRkMTEiLCJzdWIiOiJtYXpvMTIiLCJuYmYiOjE3NTIzNjcwNjQsImV4cCI6MTc1MjM2ODI2NCwiaWF0IjoxNzUyMzY3MDY0LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.-ScEIQvJf-vvpvvYqrjEizMuIq-hjpovqnuPcF6rUBE"  # your token here
+claims = jwt.get_unverified_claims(token)
+print("Unverified claims:", claims)
