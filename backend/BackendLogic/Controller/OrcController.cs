@@ -6,7 +6,7 @@ namespace BackendLogic.Controller;
 using Microsoft.Extensions.Logging;
 
 [ApiController]
-[Route("api/orc")]
+[Route("api/ocr")]
 public class OcrController : ControllerBase
 {
     private readonly HttpClient _httpClient;
