@@ -27,7 +27,7 @@ export default function PDFDownloadButton({filename, token}: { filename: string;
             onClick={downloadPDF}
             className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
         >
-            📄 Download PDF Report
+            Download PDF Report
         </button>
     );
 }

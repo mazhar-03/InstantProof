@@ -1,44 +1,44 @@
+import os
 from PIL import Image, ImageDraw, ImageFont
 import piexif
 from datetime import datetime
 
-# Create image with test text
-img = Image.new('RGB', (800, 600), color=(255, 255, 255))
-draw = ImageDraw.Draw(img)
-
-# Use default font (size may vary by system)
 try:
-    font = ImageFont.truetype("arial.ttf", 24)
-except:
-    font = ImageFont.load_default()
+    # Create image with error handling
+    img = Image.new('RGB', (800, 1000), color=(240, 242, 245))
+    draw = ImageDraw.Draw(img)
 
-text = """Instant Proof Test Image
+    # Load fonts with fallbacks
+    try:
+        font = ImageFont.truetype("arial.ttf", 22)
+        bold_font = ImageFont.truetype("arialbd.ttf", 24)
+    except:
+        font = ImageFont.load_default()
+        bold_font = ImageFont.load_default()
 
-This image contains:
-- Sample text for OCR testing
-- Basic EXIF metadata
-- The word 'atakan' for threat detection
-- Normal text to show the app works
+    # Chat content
+    messages = [
+        {"sender": "Alice", "text": "Did you send the documents?", "time": "10:00 AM"},
+        {"sender": "Bob", "text": "Yes, but the file contains atakan's notes", "time": "10:02 AM"},
+        {"sender": "Alice", "text": "Please check page 12 for errors", "time": "10:05 AM"},
+    ]
 
-Generated: {date}
-""".format(date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # Draw messages
+    y = 50
+    for msg in messages:
+        # Sender and time
+        draw.text((50, y), f"{msg['sender']} • {msg['time']}", font=bold_font, fill=(0, 0, 128))
+        y += 30
 
-draw.text((50, 50), text, font=font, fill=(0, 0, 0))
+        # Message text
+        draw.text((50, y), msg['text'], font=font, fill=(0, 0, 0))
+        y += 50
 
-exif_dict = {
-    "0th": {
-        piexif.ImageIFD.Make: "TestCamera",
-        piexif.ImageIFD.Model: "TestDevice",
-    },
-    "Exif": {
-        piexif.ExifIFD.DateTimeOriginal: datetime.now().strftime("%Y:%m:%d %H:%M:%S"),
-    },
-    "1st": {}
-}
+    # Save without EXIF to avoid piexif dependency
+    if not os.path.exists("test_images"):
+        os.makedirs("test_images")
+    img.save("test_images/chat.jpg")
+    print("Successfully generated: test_images/chat.jpg")
 
-exif_bytes = piexif.dump(exif_dict)
-
-# Save image with EXIF data
-filename = "test_image.jpg"
-img.save(filename, "jpeg", exif=exif_bytes)
-print(f"Test image generated: {filename}")
+except Exception as e:
+    print(f"Error generating image: {str(e)}")

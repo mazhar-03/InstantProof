@@ -34,7 +34,7 @@ export default function LoginForm({onLogin}: { onLogin: (token: string) => void 
 
     return (
         <div className="bg-red-400 p-8 rounded-2xl shadow-lg w-full max-w-md">
-            <h1 className="text-3xl font-bold mb-6 text-center text-white">🔐 Login</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center text-white">Login</h1>
 
             <input
                 type="text"
