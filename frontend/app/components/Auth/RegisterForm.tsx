@@ -1,6 +1,10 @@
-import { useState } from "react";
+import {useState} from "react";
 
-export default function RegisterForm() {
+interface RegisterFormProps {
+  onRegister?: (t: string) => void
+}
+
+export default function RegisterForm({onRegister}: RegisterFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState("");
@@ -16,6 +20,7 @@ export default function RegisterForm() {
       return "Password must contain at least one special character.";
     return null; // valid
   }
+
   const handleRegister = async () => {
     setError("");
     setSuccess("");
@@ -34,8 +39,8 @@ export default function RegisterForm() {
     try {
       const res = await fetch("http://localhost:5156/api/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password}),
       });
 
       if (!res.ok) {

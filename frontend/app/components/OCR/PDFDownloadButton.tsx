@@ -8,8 +8,11 @@ export default function PDFDownloadButton({filename, token}: { filename: string;
             });
             if (!res.ok) throw new Error("Download failed");
 
+            // binary object
             const blob = await res.blob();
             const url = URL.createObjectURL(blob);
+
+            // creates dynamically <a> tag
             const a = document.createElement("a");
             a.href = url;
             a.download = filename;

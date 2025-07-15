@@ -5,6 +5,7 @@ export default function FileUploader({onFileChange}: { onFileChange: (file: File
             onChange={(e) => {
                 const selected = e.target.files?.[0];
                 if (selected) onFileChange(selected);
+                // selecting same file will trigger button
                 e.target.value = "";
             }}
         />

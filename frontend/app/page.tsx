@@ -42,7 +42,7 @@ export default function Home() {
 
     if (!token) {
         return (
-          <main className="min-h-screen flex flex-col items-center justify-center bg-gray-300 p-4">
+          <div className="min-h-screen flex flex-col items-center justify-center bg-gray-300 p-4">
               {showRegister ? (
                 <RegisterForm onRegister={login} />
               ) : (
@@ -56,12 +56,12 @@ export default function Home() {
                     ? "Already have an account? Login"
                     : "Don't have an account? Register"}
               </button>
-          </main>
+          </div>
         );
     }
 
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-300 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gray-300 p-4">
           <div className="bg-red-400 p-8 rounded-2xl shadow-lg w-full max-w-2xl">
               <div className="flex justify-between items-center mb-6">
                   <h1 className="text-3xl font-bold text-center text-white flex-1">
@@ -87,6 +87,6 @@ export default function Home() {
 
               <ResultDisplay result={result} token={token} />
           </div>
-      </main>
+      </div>
     );
 }
