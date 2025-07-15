@@ -1,19 +1,32 @@
 import { useState } from "react";
 
-export default function RegisterForm({}: {
-  onRegister: (token: string) => void;
-}) {
+export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  //password validation
+  function validatePassword(pw: string): string | null {
+    if (pw.length < 8) return "Password must be at least 8 characters.";
+    if (!/[A-Z]/.test(pw)) return "Password must contain at least one uppercase letter.";
+    if (!/\d/.test(pw)) return "Password must contain at least one number.";
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(pw))
+      return "Password must contain at least one special character.";
+    return null; // valid
+  }
   const handleRegister = async () => {
     setError("");
     setSuccess("");
     if (!username || !password) {
       setError("Enter username and password.");
+      return;
+    }
+
+    const pwError = validatePassword(password);
+    if (pwError) {
+      setError(pwError);
       return;
     }
 
@@ -31,6 +44,8 @@ export default function RegisterForm({}: {
       }
 
       setSuccess("User registered. Please log in.");
+      setUsername("");
+      setPassword("");
     } catch (err: any) {
       setError(err.message || "Registration failed");
     } finally {
@@ -60,6 +75,8 @@ export default function RegisterForm({}: {
         value={password}
         onChange={(e) => {
           setPassword(e.target.value);
+          setError("");
+          setSuccess("");
         }}
         onKeyDown={(e) => e.key === "Enter" && handleRegister()}
         className="w-full p-2 mb-4 rounded border"
